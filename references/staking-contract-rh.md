@@ -19,8 +19,8 @@ user pays), the registry allow-list, and the history-dependent facts below.
 The RH proxy points at the same implementation address as Base, deployed by CREATE2 on both
 chains, with sha256 of the runtime `9d667655…848b` on both. Every verb in this file therefore has
 the same selector and the same behaviour as on Base, including the delegated-staking verbs
-(`stakeOnBehalf` `0x45f54bfd`, `addToStakeOnBehalf` `0x9b316ed6`), which were absent on RH before
-V9 and are present now.
+(`stakeOnBehalf` `0x45f54bfd`, `addToStakeOnBehalf` `0x9b316ed6`), which have been present on RH
+since its V8 upgrade of 2026-09-13 (block 61,881,240).
 
 ## ABI fragments (call these exactly)
 

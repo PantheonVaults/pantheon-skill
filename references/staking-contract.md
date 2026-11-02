@@ -105,11 +105,12 @@ An agent that enumerated the array on the FADED pool would report USDC only and 
 | `0xb509bbcf` | CliffNotPassed() | An unstake was requested in the **same calendar month as the stake**. It is not a lock-end check: a normal unstake can be requested from the next month on, with the 10% principal penalty if before lock end. Do not offer emergency exit as a workaround unless the user asks. |
 | `0x08c379a0` | Error(string) | **Not a vault error.** Decode the string and relay it. From an older *token* contract this is typically `"Insufficient allowance"` — the approve step was missed or was too small. Re-approve the exact amount. |
 | `0xfb8f41b2` | ERC20InsufficientAllowance(address,uint256,uint256) | **Not a vault error.** The same allowance failure from an OpenZeppelin v5 token (most newer Base creator coins). Re-approve the exact amount. |
+| `0x13be252b` | InsufficientAllowance() | **Not a vault error.** Older-style allowance failure from the token contract (observed on WOLF). Re-approve the exact amount. |
 | `0xd93c0665` | EnforcedPause() | The vault is paused by its operators. Do not retry; check pantheonvaults.com. |
 | `0x42cc0c02` | MigrationPausedError() | Staking is temporarily paused during a vault migration. Do not retry; check pantheonvaults.com. |
 
 **Which error you get depends on the call and its check order.** `stake` checks `ZeroAmount`, then `InvalidLockMonths`, then `InvalidPool` (`0x2083cd40`). `claimReward` checks the *position* first, so an unknown pool reverts `NoActiveStake` (`0xfb348942`), not `InvalidPool`. A wallet that exited under V9 skips the claim gates and gets `NoRewardToClaim` once its pre-exit months are claimed. Don't read `NoActiveStake` from a claim as proof the vault is fine.
 
-Every row above was observed live on Base via `eth_call` on 2026-10-30 except `RestakeCooldownNotFinished`, `EnforcedPause` and `MigrationPausedError`, which are confirmed from the V9 source, and `Error(string)`, which was observed on Robinhood Chain (every Base token probed returned `0xfb8f41b2`).
+Every row above was observed live on Base via `eth_call` on 2026-11-02 except `RestakeCooldownNotFinished`, `EnforcedPause` and `MigrationPausedError`, which are confirmed from the V9 source, and `Error(string)`, which was observed on Robinhood Chain (34 of 35 Base registry tokens returned `0xfb8f41b2`; WOLF returned `0x13be252b`).
 
 Any other revert: report the raw selector and link the user to pantheonvaults.com support. Do not improvise an explanation.
